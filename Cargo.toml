@@ -1,0 +1,14 @@
+[package]
+name = "cv2bot"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+tokio = { version = "1", features = ["net", "macros", "rt", "rt-multi-thread", "time"]}
+anyhow = "1.0"
+tokio-tungstenite = "*"
+futures-util = "*"
+json = "*"
+ollama-rs = { version = "0.3.3", features = ["stream"] }
+redis = "1.0.0-rc.3"
+byteorder = "1.4.3"
