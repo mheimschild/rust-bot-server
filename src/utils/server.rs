@@ -4,6 +4,7 @@ use ollama_rs::generation::chat::ChatMessage;
 use tokio::{net::TcpStream};
 use tokio_tungstenite::{accept_async, tungstenite::{Bytes, Message}};
 use futures_util::{SinkExt, StreamExt};
+use log::{info};
 
 use crate::utils::{envs::Config, llm::{LLMAndEmbedder, OllamaLLMAndEmbedder, build_prompt}, vector_store::{RedisVectorStore, VectorStore, get_context_from_result}};
 
@@ -41,11 +42,16 @@ pub async fn handle_connection(
 
                                 ws_stream.send(Message::text(json::stringify(reply_obj))).await?;
 
+                                info!("question: {}", payload_str);
+
                                 let reformulated_question = if !config.use_chat_history {
                                     ollama.reformulate_question(chat_history.clone(), payload_str.to_string()).await.unwrap()
                                 } else {
                                     payload_str.to_string()
                                 };
+
+                                info!("reformulated question: {}", reformulated_question);
+
                                 let context = if config.use_index {
                                     let embeddings = ollama.embedding(reformulated_question.clone()).await;
                                     let result = redis_vector_store.query_vector(&embeddings, config.max_results).await.unwrap();
@@ -54,6 +60,8 @@ pub async fn handle_connection(
                                 } else {
                                     String::from("")
                                 };
+
+                                info!("context {}", context);
                                 
                                 let mut stream = if config.use_chat_history {
                                     ollama.send_chat_messages_with_history_stream(
@@ -92,7 +100,7 @@ pub async fn handle_connection(
                                 }
                                 chat_history.lock().unwrap().push(ChatMessage::assistant(response_text.clone()));
                             } else if msg.is_close() {
-                                println!("client disconnected");
+                                info!("client disconnected");
                                 break
                             }
                         },

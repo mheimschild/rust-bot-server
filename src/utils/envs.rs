@@ -1,4 +1,6 @@
-use std::{env};
+use std::{env, fmt::Display};
+
+use log::info;
 
 const MODEL_NAME: &str = "llama3.2";
 const EMBEDDINGS_MODEL_NAME: &str = "embeddinggemma";
@@ -18,6 +20,21 @@ pub struct Config {
     pub(crate) system_prompt: String,
 }
 
+impl Display for Config {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "port:\t\t{}
+model:\t\t{}
+embedding model:\t{}
+use index:\t\t{}
+index name:\t\t{}
+redis url:\t\t{}
+chat history\t{}
+max results\t\t{}
+system prompt\t{}
+", self.port, self.model, self.embeddings_model, self.use_index, self.index_name, self.redis_url, self.use_chat_history, self.max_results, self.system_prompt)
+    }
+}
+
 pub fn get_config_from_envs() -> Config {
     let model = env::var("MODEL_NAME").unwrap_or(MODEL_NAME.to_string());
     let embeddings_model = env::var("EMBEDDINGS_MODEL_NAME").unwrap_or(EMBEDDINGS_MODEL_NAME.to_string());
@@ -30,7 +47,7 @@ pub fn get_config_from_envs() -> Config {
     let max_results = max_results.parse().unwrap_or(3);
     let system_prompt = env::var("SYSTEM_PROMPT").unwrap_or(String::from(SYSTEM_PROMPT.to_string()));
 
-    Config { 
+    let config = Config { 
         model, 
         embeddings_model, 
         index_name, 
@@ -40,5 +57,10 @@ pub fn get_config_from_envs() -> Config {
         redis_url, 
         port, 
         system_prompt,
-    }
+    };
+    
+    info!("config {}", config);
+
+    config
+
 }
