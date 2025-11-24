@@ -1,5 +1,5 @@
 [package]
-name = "cv2bot"
+name = "rust-bot-server"
 version = "0.1.0"
 edition = "2024"
 

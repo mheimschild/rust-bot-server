@@ -214,22 +214,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "cv2bot"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "byteorder",
- "env_logger",
- "futures-util",
- "json",
- "log",
- "ollama-rs",
- "redis",
- "tokio",
- "tokio-tungstenite",
-]
-
-[[package]]
 name = "data-encoding"
 version = "2.9.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1128,6 +1112,22 @@ dependencies = [
  "wasm-bindgen-futures",
  "wasm-streams",
  "web-sys",
+]
+
+[[package]]
+name = "rust-bot-server"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "byteorder",
+ "env_logger",
+ "futures-util",
+ "json",
+ "log",
+ "ollama-rs",
+ "redis",
+ "tokio",
+ "tokio-tungstenite",
 ]
 
 [[package]]
